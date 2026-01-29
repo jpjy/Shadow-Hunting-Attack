@@ -21,7 +21,6 @@ Algorithm (per iteration):
   5. Remove all URLs in Group from the remaining set.
   6. Repeat until no URLs remain.
 
-The script defines MEMCHECK_THRESHOLD but does NOT assign a concrete value.
 """
 
 import re
