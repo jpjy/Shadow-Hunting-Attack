@@ -46,7 +46,7 @@ int main() {
     // Seed the random number generator
     srand(time(NULL));
 
-    printf("Starting LLC eviction loop. Press Ctrl+C to exit.\n");
+    printf("Starting LLC eviction loop.\n");
 
     // Infinite loop to continuously access the buffer in random order
     while (1) {
