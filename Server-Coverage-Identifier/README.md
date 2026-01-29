@@ -14,7 +14,7 @@ This directory contains the code and scripts used to implement the **Server Cove
 
 **`Instance_deployment/`**
 
-Cloud-specific scripts for deploying and configuring many function instances:
+Cloud-specific scripts for deploying and configuring function instances:
 
 - **`AWS_Lambda/create_configure_function_instance.sh`**  
   Creates a batch of AWS Lambda functions from a container image, configures functions, and attaches public Function URLs.
@@ -37,9 +37,18 @@ Cloud-specific scripts for deploying and configuring many function instances:
 **`iteration_test.py`**
 
 
-- Each function instance exposes two endpoints:  
-  - `/lock` — triggers a memory-lock operation on that instance.  
-  - `/check` — runs a mem-check routine and returns timing-related metrics.
+- Each attacker's controlled function instance exposes two endpoints:  
+  - `/lock` — triggers a mem-lock operation on that instance.  
+  - `/check` — runs a mem-check operation and returns memory access latency.
+
+- In each iteration:
+  1. Selects one instance as the lock instance and triggers `/lock` on it.
+  2. Triggers `/check` on all other instances concurrently.
+  3. Identifies candidates whose mem-check metric exceeds a configurable threshold.
+  4. Performs a reverification round to confirm server-sharing relationships.
+  5. Groups the lock instance with verified instances and removes them from the remaining set.
+  
+- Iterates until all instances are assigned to a server-sharing group.
 
 ---
 
@@ -76,7 +85,7 @@ Source and artifacts for the container image used in the experiments:
 
 - Contains the standalone mem-check binary (`check`) and its source (`check.c`), plus shared headers (`cacheutils.h`, `common.h`).
 
-These directories allow you to rebuild or evaluate the lock/check primitives outside of the integrated container image.
+These allow to evaluate the lock/check primitives outside of the integrated container image.
 
 ---
 
