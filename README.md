@@ -1,102 +1,76 @@
-# Server Coverage Identifier
+# Shadow Hunting in the Cloud – Open Science Artifacts
 
-This directory contains the code and scripts used to implement the **Server Coverage Identifier** described in our paper. It provides:
-
-- Cloud deployment scripts to create large numbers of function instances on major FaaS platforms.
-- The lock/check binaries and container image used to induce and measure memory bus contention.
-- The iteration script that infers which instances share the same physical server.
+This repository contains the core artifacts used in our study of **server coverage identification**, **attacker–victim server sharing**, **attacker instance proliferation**, and **case study** in FaaS/cloud platforms. Each subdirectory corresponds to a major component of the experimental pipeline described in the paper.
 
 ---
 
-## Contents
+## 1. `Server-Coverage-Identifier/`
 
-### 1. Instance Deployment
+Artifacts for discovering **which attacker instances share the same physical server**.
 
-**`Instance_deployment/`**
+- Deployment scripts for creating many function instances on:
+  - AWS Lambda
+  - Azure Function Apps
+  - Google Cloud Run
+- A container image exposing `/lock` and `/check` endpoints that induce and measure memory-bus contention.
+- An iteration script that:
+  - Systematically runs mem-lock/mem-check across instances.
+  - Infers server-sharing groups (server coverage) among them.
 
-Cloud-specific scripts for deploying and configuring function instances:
+This component provides the server coverage map used by later stages, such as attacker–victim localization.
 
-- **`AWS_Lambda/create_configure_function_instance.sh`**  
-  Creates a batch of AWS Lambda functions from a container image, configures functions, and attaches public Function URLs.
+See the detailed introduction to each file in the README file inside Server-Coverage-Identifier/
+---
 
-- **`Azure_Function_Apps/create_function_instance.sh`**  
-  Creates multiple Azure Function Apps for the experiment.
+## 2. `Attacker-Victim-Server-Sharing-Identifier/`
 
-- **`Azure_Function_Apps/configure_function_instance.sh`**  
-  Applies post-creation settings to the Azure Function Apps (e.g., app configuration, timeouts).
+Artifacts for the **Target Victim Locator**: finding which attacker instance shares a server with an uncontrolled victim service.
 
-- **`Google_Cloud_Run/create_configure_function_instance.sh`**  
-  Deploys multiple Google Cloud Run services from a container image, and configures functions.
+- Integrated container image with:
+  - `/lock` for memory-bus locking,
+  - `/info` for CPU brand/frequency,
+  - `/instance_id` for per-instance identity.
+- Python scripts that:
+  1. Group attacker instances by (CPU brand, frequency) and deduplicate by server (one representative per server).
+  2. Run a binary-search-style localization:
+     - Lock subsets of attacker instances.
+     - Probe the victim’s response time.
+     - Narrow down to the attacker instance that shares a server with the victim based on an absolute latency threshold.
 
-> **Prerequisite:** The corresponding cloud CLI (`aws`, `az`, or `gcloud`) must be installed, authenticated, and authorized to create resources.
+This directory implements the end-to-end attacker–victim server sharing identification pipeline.
+
+See the detailed introduction to each file in the README file inside Attacker-Victim-Server-Sharing-Identifier/
 
 ---
 
-### 2. Server Coverage Identifier Logic
+## 3. `Attacker-Instances-Proliferation/`
 
-**`iteration_test.py`**
+Artifacts for **scaling out attacker instances** and distinguishing which instance handled each request.
 
+- Container images that:
+  - Expose an `/instance_id` endpoint for retrieving platform- or app-level instance identifiers.
+  - Integrate memory-lock/check primitives with instance IDs.
+- Scripts to group scaled-out instances into server-sharing groups based on timing signals and instance IDs.
 
-- Each attacker's controlled function instance exposes two endpoints:  
-  - `/lock` — triggers a mem-lock operation on that instance.  
-  - `/check` — runs a mem-check operation and returns memory access latency.
+Used in the paper to demonstrate attacker instance proliferation.
 
-- In each iteration:
-  1. Selects one instance as the lock instance and triggers `/lock` on it.
-  2. Triggers `/check` on all other instances concurrently.
-  3. Identifies candidates whose mem-check metric exceeds a configurable threshold.
-  4. Performs a reverification round to confirm server-sharing relationships.
-  5. Groups the lock instance with verified instances and removes them from the remaining set.
-  
-- Iterates until all instances are assigned to a server-sharing group.
+See the detailed introduction to each file in the README file inside Attacker-Instances-Proliferation/
 
 ---
 
-### 3. Integrated Lock/Check Container Image
+## 4. `Case-Study/`
 
-**`lock_check_integrated_image/`**
+Low-level **resource contention primitives** used in the case studies:
 
-Source and artifacts for the container image used in the experiments:
+- Programs to generate contention on:
+  - Last-level cache (LLC)
+  - Memory bus
+  - Network interface card (NIC)
+- Each subdirectory contains C source and compiled binaries for stressing a specific shared hardware component (and, for NIC, an auxiliary Python driver).
 
-- **`lock-3`, `lock-3.c`**  
-  Mem-lock binary and source code that induces memory bus contention.
+These primitives are used to illustrate how attacker workloads can interfere with victim performance via shared microarchitectural and I/O resources.
 
-- **`check`, `check.c`**  
-  Mem-check binary and source code that measures memory access timing under contention.
+See the detailed introduction to each file in the README file inside Case-Study/
 
-- **`cacheutils.h`, `common.h`**  
-  Shared helper headers for cache and timing primitives.
 
-- **`flask_app.py`**  
-  Flask application exposing HTTP endpoints (including `/lock` and `/check`) that wrap the underlying binaries.
-
-- **`Dockerfile`, `requirements.txt`**  
-  Used to build the integrated container image that is deployed across FaaS platforms.
-
----
-
-### 4. Standalone Lock and Check Components
-
-**`mem-lock/`**
-
-- Contains the standalone mem-lock binary (`lock-3`) and its source (`lock-3.c`), useful for isolated testing or rebuilding.
-
-**`mem-check/`**
-
-- Contains the standalone mem-check binary (`check`) and its source (`check.c`), plus shared headers (`cacheutils.h`, `common.h`).
-
-These allow to evaluate the lock/check primitives outside of the integrated container image.
-
----
-
-## High-Level Usage
-
-1. **Build the container image**  
-   From `lock_check_integrated_image/`, build and push the image to your preferred registry (AWS ECR, Azure Container Registry, or Artifact Registry / GCR).
-
-2. **Deploy instances on each platform**  
-   Use the scripts in `Instance_deployment/` to create large batches of function instances or services on AWS Lambda, Azure Function Apps, and Google Cloud Run.
-
-3. **Run the Server Coverage Identifier**  
-   Configure `iteration_test.py` with the list of instance URLs and your chosen threshold, then run it to infer server-sharing groups as described in the paper.
 
