@@ -29,22 +29,13 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN /venv/bin/pip install --upgrade pip && /venv/bin/pip install -r /app/requirements.txt
 
-# Copy the LLCFeasible directory and necessary files into the container at /app
-COPY LLCFeasible/ /app/LLCFeasible/
 COPY lock-3.c /app/
 COPY check.c /app/
 COPY cacheutils.h /app/
-COPY common.h /app/
-COPY timer.c /app/
-COPY timer /app/
 
 # Build C projects
 RUN gcc -o lock-3 lock-3.c
 RUN gcc -o check check.c
-
-# Ensure symbolic links are properly set
-RUN ln -sfn /app/LLCFeasible/extern/PTEditor/ptedit_header.h /app/LLCFeasible/include/ptedit_header.h && \
-    rm -rf /app/LLCFeasible/build && mkdir /app/LLCFeasible/build && cd /app/LLCFeasible/build && cmake .. && make
 
 # Copy the Flask script to the container
 COPY flask_app.py /app/
