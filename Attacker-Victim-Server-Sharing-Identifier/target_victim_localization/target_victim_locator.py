@@ -4,7 +4,7 @@ Target Victim Locator (Binary Search over Attacker Sets)
 
 This version uses an absolute latency threshold instead of a baseline slowdown
 factor. We assume the user has already determined a response-time threshold T
-(e.g., from prior calibration). If the victim's median response time exceeds T
+(e.g., from prior calibration as shown in Figure 8). If the victim's median response time exceeds T
 during mem-lock, we treat that as evidence of server sharing.
 
 Inputs:
@@ -78,8 +78,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--probe-runs",
         type=int,
-        default=3,
-        help="Number of victim requests to send in each contention probe (default: 3).",
+        default=1,
+        help="Number of victim requests to send in each contention probe (default: 1).",
     )
     parser.add_argument(
         "--victim-timeout",
@@ -217,9 +217,6 @@ def is_above_threshold(
     """
     Returns True if probed_median >= latency_threshold.
     """
-    if latency_threshold <= 0.0:
-        # Degenerate threshold; treat everything as non-slow
-        return False
     return probed_median >= latency_threshold
 
 
