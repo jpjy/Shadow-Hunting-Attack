@@ -21,8 +21,7 @@ int main() {
     // Get the start time
     time_t start_time = time(NULL);
 
-    // Loop for approximately 30 seconds
-    while (time(NULL) - start_time < 5) { // Check the elapsed time
+    while (time(NULL) - start_time < 1) { // Check the elapsed time
         for (size_t i = 0; i < N; ++i) {
             atomic_fetch_add(&unaligned_addr[i], 1); // Increment each atomic_int by 1
         }
