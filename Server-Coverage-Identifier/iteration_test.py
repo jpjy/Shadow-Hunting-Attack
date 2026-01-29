@@ -47,7 +47,6 @@ CHECK_ENDPOINT = "check"
 REQUEST_TIMEOUT: float = 10.0
 
 # Threshold on mem-check metric (e.g., count[0]) to decide server sharing.
-# This script does NOT set a numeric value; choose empirically in practice.
 # As attacker instances are controlled by the attacker, pre-observing the suitable memory access
 # threshold is trivial.
 MEMCHECK_THRESHOLD: Optional[int] = None  # e.g., 800, 1000 cpu cycles or 0.1 second, etc.
