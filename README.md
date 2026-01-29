@@ -19,7 +19,8 @@ Artifacts for discovering **which attacker instances share the same physical ser
 
     
   This component provides the server coverage map used by later stages, such as attacker–victim localization.
-See the detailed introduction to each file in the README file inside Server-Coverage-Identifier/
+  
+  See the detailed introduction to each file in the README file inside Server-Coverage-Identifier/
 ---
 
 ## 2. `Attacker-Victim-Server-Sharing-Identifier/`
@@ -37,8 +38,9 @@ Artifacts for the **Target Victim Locator**: finding which attacker instance sha
      - Probe the victim’s response time.
      - Narrow down to the attacker instance that shares a server with the victim based on an absolute latency threshold.
 
-This directory implements the end-to-end attacker–victim server sharing identification pipeline.
-See the detailed introduction to each file in the README file inside Attacker-Victim-Server-Sharing-Identifier/
+  This directory implements the end-to-end attacker–victim server sharing identification pipeline.
+  
+  See the detailed introduction to each file in the README file inside Attacker-Victim-Server-Sharing-Identifier/
 
 ---
 
@@ -51,8 +53,9 @@ Artifacts for **scaling out attacker instances** and distinguishing which instan
   - Integrate memory-lock/check primitives with instance IDs.
 - Scripts to group scaled-out instances into server-sharing groups based on timing signals and instance IDs.
 
-Used in the paper to demonstrate attacker instance proliferation.
-See the detailed introduction to each file in the README file inside Attacker-Instances-Proliferation/
+  Used in the paper to demonstrate attacker instance proliferation.
+  
+  See the detailed introduction to each file in the README file inside Attacker-Instances-Proliferation/
 
 ---
 
@@ -66,8 +69,9 @@ Low-level **resource contention primitives** used in the case studies:
   - Network interface card (NIC)
 - Each subdirectory contains C source and compiled binaries for stressing a specific shared hardware component (and, for NIC, an auxiliary Python driver).
 
-These primitives are used to illustrate how attacker workloads can interfere with victim performance via shared microarchitectural and I/O resources.
-See the detailed introduction to each file in the README file inside Case-Study/
+  These primitives are used to illustrate how attacker workloads can interfere with victim performance via shared microarchitectural and I/O resources.
+  
+  See the detailed introduction to each file in the README file inside Case-Study/
 
 
 
