@@ -67,9 +67,9 @@ Low-level **resource contention primitives** used in the case studies:
   - Last-level cache (LLC)
   - Memory bus
   - Network interface card (NIC)
-- Each subdirectory contains C source and compiled binaries for stressing a specific shared hardware component (and, for NIC, an auxiliary Python driver).
+- Each subdirectory contains C source and compiled binaries for stressing a specific shared hardware component.
 
-  These primitives are used to illustrate how attacker workloads can interfere with victim performance via shared microarchitectural and I/O resources.
+  These primitives are used to illustrate how attacker workloads can interfere with victim performance via shared hardware components.
   
   See the detailed introduction to each file in the README file inside Case-Study/
 
