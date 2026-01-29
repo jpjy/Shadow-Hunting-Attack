@@ -29,8 +29,7 @@ Algorithm (per Section 5):
          Remove all instances in G from the remaining set.
   - Repeat until all instances are assigned to some group.
 
-The concrete value of the threshold is *not* defined in this script; it should be
-chosen empirically based on the mem-check distribution on a given platform.
+The concrete value of the threshold should be chosen empirically based on the mem-check distribution on a given platform.
 """
 
 import re
