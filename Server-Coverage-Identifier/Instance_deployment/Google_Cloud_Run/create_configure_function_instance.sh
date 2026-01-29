@@ -4,7 +4,7 @@ set -euo pipefail
 
 # GCP project and region
 PROJECT_ID=""
-REGION="us-west1"  # e.g., us-central1, us-west1, europe-west2
+REGION="us-west1"  # e.g., us-west1, europe-west2
 
 IMAGE="us-west1-docker.pkg.dev/xxx/xxx/xxx"
 
