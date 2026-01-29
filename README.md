@@ -16,7 +16,9 @@ Artifacts for discovering **which attacker instances share the same physical ser
 - An iteration script that:
   - Systematically runs mem-lock/mem-check across instances.
   - Infers server-sharing groups (server coverage) among them.
-This component provides the server coverage map used by later stages, such as attacker–victim localization.
+
+    
+  This component provides the server coverage map used by later stages, such as attacker–victim localization.
 See the detailed introduction to each file in the README file inside Server-Coverage-Identifier/
 ---
 
