@@ -14,7 +14,7 @@ void *lock_memory(void *arg) {
     time_t start_time = time(NULL);
 
     // Loop for approximately 30 seconds
-    while (time(NULL) - start_time < 60) { // Check elapsed time
+    while (time(NULL) - start_time < 30) { // Check elapsed time
         for (size_t i = 0; i < N; ++i) {
             atomic_fetch_add(&unaligned_addr[i], 1); // Atomic increment
         }
