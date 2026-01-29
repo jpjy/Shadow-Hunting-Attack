@@ -30,7 +30,6 @@ COPY requirements.txt /app/requirements.txt
 RUN /venv/bin/pip install --upgrade pip && /venv/bin/pip install -r /app/requirements.txt
 
 COPY lock-3.c /app/
-COPY common.h /app/
 
 # Build C projects
 RUN gcc -o lock-3 lock-3.c
